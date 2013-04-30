@@ -58,5 +58,29 @@ if (isset($_POST['tweet'])) {
 ?>
 <span style="color: #54ff54; font-weight: bold;">nilsding@laptop-pc </span><span style="color: #5454ff; font-weight: bold;">~ $ </span>
 </div>
+
+<?php if ($CONFIG_VIEW_USERS) { ?>
+<!-- Added user view  by therealkings -->
+<div id="user">
+<h2>Wer wird benachrichtigt?</h2>
+<table>
+<?php
+$sql = mysqli_connect(MYSQL_SERVER, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
+$q = mysqli_query($sql, "SELECT user_id FROM ndl_users;");
+
+while($r = mysqli_fetch_assoc($q)) {
+	$json = file_get_contents("http://api.twitter.com/1/users/lookup.json?user_id=".$r['user_id'], true);
+	$data = json_decode($json);
+	$username = $data[0]->screen_name;
+	$name = $data[0]->name;
+	echo "<tr>";
+	echo "<td>\r\n<a href=\"https://twitter.com/".$username."\" target=\"_blank\"><img src=\"https://api.twitter.com/1/users/profile_image/".$username."?size=normal\" alt=\"@".$username."\" title=\"@".$username."\"></a>\r\n</td>\r\n";
+	echo "<td>@".$username." (".$name.")</td>";
+	echo "</tr>";
+}
+?>
+</table>
+</div>
+<?php } ?>
 </body>
 </html>
